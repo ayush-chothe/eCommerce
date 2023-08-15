@@ -23,13 +23,21 @@ public class User extends BaseEntity{
 
 	@Column(length = 30)
 	private String name;
+	
 	@Column(length = 30, unique = true) // =>unique
 	private String email;
+	
 	@Column(nullable = false, length=30) // =>NOT NULL
-	private String password;		
-	@Enumerated(EnumType.STRING) // col : varchar => enum constant name
+	private String password;
+	
+	@Enumerated(EnumType.STRING)
 	@Column(length = 10)
 	private Role role;
+	
 	@Column(length = 10)
 	private String mobile;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(length = 10)
+	private UserStatus status;
 }
