@@ -1,4 +1,4 @@
-package com.app.Pojos;
+package com.app.pojo;
 
 import java.io.Serializable;
 import java.time.LocalDate;

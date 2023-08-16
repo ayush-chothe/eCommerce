@@ -1,4 +1,4 @@
-package com.app.Pojos;
+package com.app.pojo;
 
 import java.util.List;
 
@@ -13,16 +13,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="sub_categories")
+@Table(name="categories")
 @NoArgsConstructor
 @Getter
 @Setter
-public class SubCategory  extends BaseEntity{
-
-  @Column(name="name",length = 20,unique = true)
-  private String subCatName;
+public class Category extends BaseEntity{
   
+  @Column(name="name",length = 20,unique = true)
+  private String categoryName;
+    
   @OneToMany
-  @JoinColumn(name="sub_sub_category_id")
-  private List<SubSubCategory> subSubCategory;
+  @JoinColumn(name="sub_category_id")
+  private List<SubCategory> subCategory;
+  
 }

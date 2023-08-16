@@ -1,4 +1,4 @@
-package com.app.Pojos;
+package com.app.pojo;
 
 public enum Rating {
 	ONE, TWO, THREE, FOUR, FIVE

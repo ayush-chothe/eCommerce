@@ -5,8 +5,9 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
-import com.app.Pojos.User;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.SecurityFilterChain;
 
 @SpringBootApplication
 public class Application {
@@ -22,5 +23,13 @@ public class Application {
 		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		return modelMapper;
 	}
+	
+	@Bean
+	  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	      http.authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest()
+	        .permitAll())
+	        .csrf(AbstractHttpConfigurer::disable);
+	      return http.build();
+	  }
 
 }
