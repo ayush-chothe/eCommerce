@@ -1,11 +1,9 @@
 package com.app.pojo;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -19,10 +17,10 @@ import lombok.Setter;
 @Setter
 public class SubCategory  extends BaseEntity{
 
-  @Column(name="name",length = 20,unique = true)
+  @Column(name="name",length = 20)
   private String subCatName;
   
-  @OneToMany
-  @JoinColumn(name="sub_sub_category_id")
-  private List<SubSubCategory> subSubCategory;
+  @ManyToOne
+  @JoinColumn(name="category_id")
+  private Category category;
 }

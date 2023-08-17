@@ -21,9 +21,5 @@ public class Category extends BaseEntity{
   
   @Column(name="name",length = 20,unique = true)
   private String categoryName;
-    
-  @OneToMany
-  @JoinColumn(name="sub_category_id")
-  private List<SubCategory> subCategory;
   
 }

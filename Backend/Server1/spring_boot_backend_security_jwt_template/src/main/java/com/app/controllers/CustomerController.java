@@ -35,7 +35,6 @@ public class CustomerController {
 	
 	@PostMapping("/addCustomer")
 	public ResponseEntity<?> addNewCustomer(@RequestBody User user) {
-		user.setRole(Role.CUSTOMER);
 		ApiResponse res = userService.addNewUser(user);
 		return ResponseEntity.status(HttpStatus.CREATED).body(res);
 	}
