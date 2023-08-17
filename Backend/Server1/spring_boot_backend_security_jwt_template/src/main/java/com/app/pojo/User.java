@@ -21,8 +21,11 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper = false, doNotUseGetters = true,of = "email")
 public class User extends BaseEntity{
 
-	@Column(length = 30)
-	private String name;
+	@Column(name = "first_name", length = 30)
+	private String firstName;
+	
+	@Column(name = "last_name", length = 30)
+	private String lastName;
 	
 	@Column(length = 30, unique = true) // =>unique
 	private String email;
