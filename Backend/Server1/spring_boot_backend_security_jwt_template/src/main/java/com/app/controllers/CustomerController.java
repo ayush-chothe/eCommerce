@@ -2,6 +2,8 @@ package com.app.controllers;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.dto.ApiResponse;
+import com.app.dto.LoginDTO;
 import com.app.dto.UserDTO;
 import com.app.pojo.Role;
 import com.app.pojo.User;
@@ -56,5 +59,10 @@ public class CustomerController {
 	@PutMapping
 	public ResponseEntity<?> updateUser(@RequestBody User user) {
 		return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(user));
+	}
+	
+	@PostMapping("/login")
+	public ResponseEntity<?> loginUser(@RequestBody @Valid LoginDTO credentials) {
+		return ResponseEntity.status(HttpStatus.OK).body(userService.loginUser(credentials));
 	}
 }

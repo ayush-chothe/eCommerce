@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.app.dto.ApiResponse;
+import com.app.dto.LoginDTO;
 import com.app.dto.UserDTO;
 import com.app.pojo.Role;
 import com.app.pojo.User;
@@ -50,6 +51,7 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public User findUserById(Long id) {
+		// TODO add custom exception
 		return userRepository.findById(id).orElseThrow();
 	}
 
@@ -57,6 +59,12 @@ public class UserServiceImpl implements UserService{
 	public ApiResponse updateUser(User user) {
 		userRepository.save(user);
 		return new ApiResponse("User updated successfully!");
+	}
+
+	@Override
+	public ApiResponse loginUser(LoginDTO credentials) {
+		userRepository.findByEmailAndPassword(credentials.getEmail(), credentials.getPassword()).orElseThrow();
+		return new ApiResponse("Logged in Successully!");
 	}
 	
 	
