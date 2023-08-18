@@ -5,6 +5,6 @@ import com.app.dto.ProductDTO;
 
 public interface ProductService {
 
-	ApiResponse addNewProduct(ProductDTO product);
-	
+	ApiResponse addNewProduct(ProductDTO productDto);
+	ProductDTO getProduct(Long id);
 }

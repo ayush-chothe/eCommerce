@@ -21,6 +21,7 @@ import com.app.dto.LoginDTO;
 import com.app.dto.UserDTO;
 import com.app.pojo.Role;
 import com.app.pojo.User;
+import com.app.pojo.UserStatus;
 import com.app.service.UserService;
 
 @RestController
@@ -33,7 +34,7 @@ public class CustomerController {
 	@Autowired
 	private ModelMapper mapper;
 	
-	@PostMapping("/addCustomer")
+	@PostMapping("/register")
 	public ResponseEntity<?> addNewCustomer(@RequestBody User user) {
 		ApiResponse res = userService.addNewUser(user);
 		return ResponseEntity.status(HttpStatus.CREATED).body(res);

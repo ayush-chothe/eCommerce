@@ -47,4 +47,13 @@ public class ProductServiceImpl implements ProductService {
 		
 		return new ApiResponse("Product addition successful");
 	}
+
+	@Override
+	public ProductDTO getProduct(Long id) {
+		Product product = productRepository.findById(id).orElseThrow();
+		return mapper.map(product, ProductDTO.class);
+	}
+	
+	
+
 }

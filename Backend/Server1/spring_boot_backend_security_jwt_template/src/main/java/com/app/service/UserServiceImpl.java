@@ -30,7 +30,13 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public ApiResponse addNewUser(User user) {
 		userRepository.save(user);
-		return new ApiResponse("User added successfully!");
+		ApiResponse res = new ApiResponse("User added successfully!");
+		if(user.getRole() == Role.SELLER) {
+			res.setMessage("Registration Successfull, pending for Admin approval");
+			user.setStatus(UserStatus.PENDING);
+		}
+		else if(user.getRole() == Role.CUSTOMER)  res.setMessage("Registration Successfull");
+		return res;
 	}
 
 	@Override

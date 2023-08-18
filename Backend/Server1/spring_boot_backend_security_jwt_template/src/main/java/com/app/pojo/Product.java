@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -27,6 +29,10 @@ public class Product extends BaseEntity implements Serializable{
 	
 	@Column(name = "product_quantity")
 	private int quantity;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(length = 10)
+	private ProductStatus status;
 	
 	@ManyToOne
 	@JoinColumn(name = "seller_id")
