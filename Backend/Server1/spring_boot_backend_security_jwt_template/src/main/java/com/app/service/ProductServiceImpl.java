@@ -1,7 +1,7 @@
 package com.app.service;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -29,16 +29,16 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private ProductRepository productRepository;
-	
+
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private SubSubCategoryRepository subSubCategoryRepository;
-	
+
 	@Autowired
 	private ProductImageRepository productImageRepository;
-	
+
 	@Autowired
 	private ModelMapper mapper;
 
@@ -47,23 +47,32 @@ public class ProductServiceImpl implements ProductService {
 	public ApiResponse addNewProduct(ProductDTO productDto) {
 
 		Product product = mapper.map(productDto, Product.class);
-		
+
 		User seller = userRepository.findById(productDto.getSellerId()).orElseThrow();
 		SubSubCategory cat = subSubCategoryRepository.findById(productDto.getCategoryId()).orElseThrow();
-		
+
 		product.setSeller(seller);
 		product.setCategory(cat);
 		product.setStatus(ProductStatus.ADDED);
-		
+
 		productRepository.save(product);
-		
+
 		return new ApiResponse("Product addition successful");
 	}
 
 	@Override
 	public ProductDTO getProduct(Long id) {
 		Product product = productRepository.findById(id).orElseThrow();
-		return mapper.map(product, ProductDTO.class);
+		List<ProductImage> productImages = productImageRepository.findByProduct(product);
+		ProductDTO productDto = mapper.map(product, ProductDTO.class);
+		List<Long> list = new ArrayList<>();
+		
+		for (ProductImage pi : productImages) {
+			list.add(pi.getId());
+		}
+		productDto.setProductImageIds(list);
+		
+		return productDto;
 	}
 
 	@Override
@@ -79,12 +88,12 @@ public class ProductServiceImpl implements ProductService {
 		Product product = productRepository.findById(productId).orElseThrow();
 		productImage.setProduct(product);
 		productImage.setImage(image.getBytes());
-		
+
 		productImageRepository.save(productImage);
-		
+
 		return new ApiResponse("Image added successfully");
 	}
-	
+
 	@Override
 	public byte[] getImages(Long productImageId) throws IOException {
 

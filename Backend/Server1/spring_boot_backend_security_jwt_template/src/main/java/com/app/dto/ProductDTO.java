@@ -1,12 +1,11 @@
 package com.app.dto;
 
+import java.util.List;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Range;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +27,8 @@ public class ProductDTO {
 	
 	@Range(min = 1)
 	private int quantity;
+	
+	private List<Long> productImageIds;
 	
 	@NotNull(message="SellerId cannot be blank")
 	private Long sellerId; 
