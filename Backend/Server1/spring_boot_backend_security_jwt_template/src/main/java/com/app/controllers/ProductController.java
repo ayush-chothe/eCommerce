@@ -1,5 +1,9 @@
 package com.app.controllers;
 
+import static org.springframework.http.MediaType.IMAGE_GIF_VALUE;
+import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
+import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
+
 import java.io.IOException;
 
 import javax.validation.Valid;
@@ -17,8 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import static org.springframework.http.MediaType.*;
 import com.app.dto.ApiResponse;
+import com.app.dto.CartDto;
 import com.app.dto.ProductDTO;
 import com.app.service.ProductService;
 
@@ -61,5 +65,10 @@ public class ProductController {
 	    System.out.println("in download img ");
 	    return ResponseEntity.ok(prodService.getImages(productId));
 	  }
+	 
+	 @PostMapping("/cart")
+	 public ResponseEntity<?> addToCart(CartDto cartDto) {
+		 return ResponseEntity.status(HttpStatus.OK).body(prodService.addProductToCart(cartDto));
+	 }
 	 
 }

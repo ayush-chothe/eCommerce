@@ -12,12 +12,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.app.dto.ApiResponse;
+import com.app.dto.CartDto;
 import com.app.dto.ProductDTO;
+import com.app.pojo.Cart;
 import com.app.pojo.Product;
 import com.app.pojo.ProductImage;
 import com.app.pojo.ProductStatus;
 import com.app.pojo.SubSubCategory;
 import com.app.pojo.User;
+import com.app.repository.CartRepository;
 import com.app.repository.ProductImageRepository;
 import com.app.repository.ProductRepository;
 import com.app.repository.SubSubCategoryRepository;
@@ -38,6 +41,9 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private ProductImageRepository productImageRepository;
+	
+	@Autowired 
+	private CartRepository cartRepository;
 
 	@Autowired
 	private ModelMapper mapper;
@@ -71,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
 			list.add(pi.getId());
 		}
 		productDto.setProductImageIds(list);
-		
+		// TODO add sellerid and categoryid in productDto
 		return productDto;
 	}
 
@@ -100,5 +106,24 @@ public class ProductServiceImpl implements ProductService {
 		ProductImage productImage = productImageRepository.findById(productImageId).orElseThrow();
 		return productImage.getImage();
 	}
+
+	@Override
+	public ApiResponse addProductToCart(CartDto cartDto) {
+		
+		User user = userRepository.findById(cartDto.getUserId()).orElseThrow();
+		Product product = productRepository.findById(cartDto.getProductId()).orElseThrow();
+		
+		Cart cart = new Cart();
+		cart.setProduct(product);
+		cart.setUser(user);
+		cart.setQuantity(cartDto.getQuantity());
+		
+		cartRepository.save(cart);
+		
+		
+		return new ApiResponse("Product added to cart");
+	}
+	
+	
 
 }

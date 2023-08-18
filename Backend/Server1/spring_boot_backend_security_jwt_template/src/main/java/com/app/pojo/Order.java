@@ -18,7 +18,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Order extends BaseEntity implements Serializable{
+public class Order extends BaseEntity{
 	
 	@ManyToOne
 	@JoinColumn(name = "customer_id")
@@ -29,4 +29,7 @@ public class Order extends BaseEntity implements Serializable{
 	
 	@Column(name = "delivery_date")
 	private LocalDate deliveryDate;
+	
+	@Column
+	private int total;
 }

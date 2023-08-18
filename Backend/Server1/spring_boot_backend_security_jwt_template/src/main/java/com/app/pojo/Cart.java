@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -18,14 +19,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Cart implements Serializable{
-	
-	@Id
+public class Cart extends BaseEntity{
+
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
 	
-	@Id
 	@ManyToOne
 	@JoinColumn(name = "product_id")
 	private Product product;

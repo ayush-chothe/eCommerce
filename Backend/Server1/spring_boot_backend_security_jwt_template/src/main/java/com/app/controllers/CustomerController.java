@@ -19,9 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.app.dto.ApiResponse;
 import com.app.dto.LoginDTO;
 import com.app.dto.UserDTO;
-import com.app.pojo.Role;
 import com.app.pojo.User;
-import com.app.pojo.UserStatus;
+import com.app.service.OrderService;
 import com.app.service.UserService;
 
 @RestController
@@ -30,6 +29,9 @@ public class CustomerController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	OrderService orderService;
 	
 	@Autowired
 	private ModelMapper mapper;
@@ -64,5 +66,10 @@ public class CustomerController {
 	@PostMapping("/login")
 	public ResponseEntity<?> loginUser(@RequestBody @Valid LoginDTO credentials) {
 		return ResponseEntity.status(HttpStatus.OK).body(userService.loginUser(credentials));
+	}
+	
+	@GetMapping("/checkout/{id}")
+	public ResponseEntity<?> checkout(@RequestParam Long id) {
+		return ResponseEntity.status(HttpStatus.OK).body(orderService.confirmPayment(id));
 	}
 }
