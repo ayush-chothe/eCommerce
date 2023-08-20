@@ -3,6 +3,7 @@ package com.app.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -14,15 +15,18 @@ import org.springframework.web.multipart.MultipartFile;
 import com.app.dto.ApiResponse;
 import com.app.dto.CartDto;
 import com.app.dto.ProductDTO;
+import com.app.dto.ReviewDTO;
 import com.app.pojo.Cart;
 import com.app.pojo.Product;
 import com.app.pojo.ProductImage;
 import com.app.pojo.ProductStatus;
+import com.app.pojo.Review;
 import com.app.pojo.SubSubCategory;
 import com.app.pojo.User;
 import com.app.repository.CartRepository;
 import com.app.repository.ProductImageRepository;
 import com.app.repository.ProductRepository;
+import com.app.repository.ReviewRepository;
 import com.app.repository.SubSubCategoryRepository;
 import com.app.repository.UserRepository;
 
@@ -41,9 +45,12 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private ProductImageRepository productImageRepository;
-	
-	@Autowired 
+
+	@Autowired
 	private CartRepository cartRepository;
+
+	@Autowired
+	private ReviewRepository reviewRepository;
 
 	@Autowired
 	private ModelMapper mapper;
@@ -72,7 +79,7 @@ public class ProductServiceImpl implements ProductService {
 		List<ProductImage> productImages = productImageRepository.findByProduct(product);
 		ProductDTO productDto = mapper.map(product, ProductDTO.class);
 		List<Long> list = new ArrayList<>();
-		
+
 		for (ProductImage pi : productImages) {
 			list.add(pi.getId());
 		}
@@ -109,21 +116,40 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public ApiResponse addProductToCart(CartDto cartDto) {
-		
+
 		User user = userRepository.findById(cartDto.getUserId()).orElseThrow();
 		Product product = productRepository.findById(cartDto.getProductId()).orElseThrow();
-		
+
 		Cart cart = new Cart();
 		cart.setProduct(product);
 		cart.setUser(user);
 		cart.setQuantity(cartDto.getQuantity());
-		
+
 		cartRepository.save(cart);
-		
-		
+
 		return new ApiResponse("Product added to cart");
 	}
-	
-	
+
+	public ApiResponse reviewProduct(ReviewDTO reviewDto) {
+		User customer = userRepository.findById(reviewDto.getCustomerId()).orElseThrow();
+		Product product = productRepository.findById(reviewDto.getProductId()).orElseThrow();
+
+		Review review = new Review();
+
+		review.setRating(reviewDto.getRating());
+		review.setReview(reviewDto.getReview());
+
+		reviewRepository.save(review);
+		return new ApiResponse("Review added successfully!");
+	}
+
+	@Override
+	public List<ReviewDTO> getReviews(Long productId) {
+		Product product = productRepository.findById(productId).orElseThrow();
+		List<Review> reviews = reviewRepository.findAllByProduct(product);
+		return reviews.stream()
+				.map(review -> mapper.map(review, ReviewDTO.class))
+				.collect(Collectors.toList());
+	}
 
 }
