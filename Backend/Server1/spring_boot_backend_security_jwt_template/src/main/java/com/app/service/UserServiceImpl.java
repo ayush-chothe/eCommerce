@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 import com.app.dto.ApiResponse;
 import com.app.dto.LoginDTO;
 import com.app.dto.UserDTO;
+import com.app.pojo.Cart;
 import com.app.pojo.Role;
 import com.app.pojo.User;
 import com.app.pojo.UserStatus;
+import com.app.repository.CartRepository;
 import com.app.repository.UserRepository;
 
 @Service
@@ -26,6 +28,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private ModelMapper mapper;
+	
+	@Autowired
+	private CartRepository cartRepository;
 
 	@Override
 	public ApiResponse addNewUser(User user) {
@@ -71,6 +76,13 @@ public class UserServiceImpl implements UserService{
 	public ApiResponse loginUser(LoginDTO credentials) {
 		userRepository.findByEmailAndPassword(credentials.getEmail(), credentials.getPassword()).orElseThrow();
 		return new ApiResponse("Logged in Successully!");
+	}
+
+	@Override
+	public List<Cart> getCart(Long userId) {
+		User user = userRepository.findById(userId).orElseThrow();
+		return cartRepository.findByUser(user);
+		
 	}
 	
 	

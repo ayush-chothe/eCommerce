@@ -11,4 +11,5 @@ import com.app.pojo.User;
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long>{
 	List<Cart> findByUser(User user);
+	
 }

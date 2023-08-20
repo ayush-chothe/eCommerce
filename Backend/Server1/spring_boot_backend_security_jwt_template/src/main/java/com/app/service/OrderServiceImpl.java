@@ -76,6 +76,8 @@ public class OrderServiceImpl implements OrderService {
 			orderDetailRepository.save(orderDetail);
 		}
 		
+		cartRepository.deleteAll(carts);
+		
 		return new ApiResponse("Order placed successfully");
 	}
 	

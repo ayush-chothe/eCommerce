@@ -5,6 +5,7 @@ import java.util.List;
 import com.app.dto.ApiResponse;
 import com.app.dto.LoginDTO;
 import com.app.dto.UserDTO;
+import com.app.pojo.Cart;
 import com.app.pojo.Role;
 import com.app.pojo.User;
 import com.app.pojo.UserStatus;
@@ -16,4 +17,5 @@ public interface UserService {
 	User findUserById(Long id);
 	ApiResponse updateUser(User user);
 	ApiResponse loginUser(LoginDTO credentials);
+	List<Cart> getCart(Long userId);
 }

@@ -72,4 +72,9 @@ public class CustomerController {
 	public ResponseEntity<?> checkout(@RequestParam Long id) {
 		return ResponseEntity.status(HttpStatus.OK).body(orderService.confirmPayment(id));
 	}
+	
+	@GetMapping("/cart/{id}")
+	public ResponseEntity<?> showCart(@RequestParam Long id) {
+		return ResponseEntity.status(HttpStatus.OK).body(userService.getCart(id));
+	}
 }

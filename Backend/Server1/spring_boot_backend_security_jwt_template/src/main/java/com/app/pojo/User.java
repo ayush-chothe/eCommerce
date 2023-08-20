@@ -18,7 +18,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = false, doNotUseGetters = true,of = "email")
 public class User extends BaseEntity{
 
 	@Column(name = "first_name", length = 30)
