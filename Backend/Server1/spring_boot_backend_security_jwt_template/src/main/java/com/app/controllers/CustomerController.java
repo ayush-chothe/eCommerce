@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,8 +40,6 @@ public class CustomerController {
 	@Autowired
 	ProductService productService;
 	
-	@Autowired
-	private ModelMapper mapper;
 	
 	@PostMapping("/register")
 	public ResponseEntity<?> addNewCustomer(@RequestBody User user) {
@@ -55,12 +54,11 @@ public class CustomerController {
 	
 	@GetMapping("/{id}")
 	public UserDTO findUserById(@RequestParam Long id) {
-		User user = userService.findUserById(id);
-		return mapper.map(user, UserDTO.class);
+		return userService.findUserById(id);
 	}
 	
 	@GetMapping("/userToUpdate/{id}")
-	public User findUserToUpdate(@RequestParam Long id) {
+	public UserDTO findUserToUpdate(@RequestParam Long id) {
 		return userService.findUserById(id);
 	}
 	
@@ -75,12 +73,12 @@ public class CustomerController {
 	}
 	
 	@GetMapping("/checkout/{id}")
-	public ResponseEntity<?> checkout(@RequestParam Long id) {
+	public ResponseEntity<?> checkout(@PathVariable Long id) {
 		return ResponseEntity.status(HttpStatus.OK).body(orderService.confirmPayment(id));
 	}
 	
 	@GetMapping("/cart/{id}")
-	public ResponseEntity<?> showCart(@RequestParam Long id) {
+	public ResponseEntity<?> showCart(@PathVariable Long id) {
 		return ResponseEntity.status(HttpStatus.OK).body(userService.getCart(id));
 	}
 	

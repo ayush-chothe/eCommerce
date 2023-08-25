@@ -26,13 +26,13 @@ public class Application {
 		return modelMapper;
 	}
 	
-	@Bean
-	  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-	      http.authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest()
-	        .permitAll())
-	        .csrf(AbstractHttpConfigurer::disable);
-	      return http.build();
-	  }
+//	@Bean
+//	  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//	      http.authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest()
+//	        .permitAll())
+//	        .csrf(AbstractHttpConfigurer::disable);
+//	      return http.build();
+//	  }
 	
 	@Bean
 	  public WebMvcConfigurer corsConfigurer() {

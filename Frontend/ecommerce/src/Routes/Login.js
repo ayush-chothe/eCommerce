@@ -11,13 +11,13 @@ function Login() {
 
     const signIn = () => {
         console.log("in signin")
-        axios.post("http://127.0.0.1:7070/user/login", icreds)
+        axios.post("http://127.0.0.1:7070/auth/signin", icreds)
              .then(res => {
                setUser(res.data);
                console.log("Logged in successfully");
-               sessionStorage.setItem("userId", res.data.id);
-               sessionStorage.setItem("firstName", res.data.firstName);
-               if(res.data.role === "SELLER" && res.data.status === "APPROVED")
+               sessionStorage.setItem("userId", res.data.userId);
+               sessionStorage.setItem("jwt", res.data.jwt);
+               if(res.data.role === "SELLER")
                 navigate("/seller/products")
                else if(res.data.role === "CUSTOMER")
                 navigate("/home")

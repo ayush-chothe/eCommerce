@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.app.customException.ResourceNotFoundException;
@@ -32,11 +33,16 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private CartRepository cartRepository;
+	
+	@Autowired
+	private PasswordEncoder encoder;
 
 	@Override
 	public ApiResponse addNewUser(User user) {
+		user.setPassword(encoder.encode(user.getPassword()));
 		userRepository.save(user);
 		ApiResponse res = new ApiResponse("User added successfully!");
+		
 		if(user.getRole() == Role.SELLER) {
 			res.setMessage("Registration Successfull, pending for Admin approval");
 			user.setStatus(UserStatus.PENDING);
@@ -61,11 +67,11 @@ public class UserServiceImpl implements UserService{
 				.collect(Collectors.toList());
 	}
 
-	@Override
-	public User findUserById(Long id) {
-		// TODO add custom exception
-		return userRepository.findById(id).orElseThrow();
-	}
+//	@Override
+//	public User findUserById(Long id) {
+//		// TODO add custom exception
+//		return userRepository.findById(id).orElseThrow();
+//	}
 
 	@Override
 	public ApiResponse updateUser(User user) {
@@ -83,6 +89,31 @@ public class UserServiceImpl implements UserService{
 		User user = userRepository.findById(userId).orElseThrow();
 		return cartRepository.findByUser(user);
 		
+	}
+	
+	@Override
+	public User authenitcateUser(String email) {
+		
+		return userRepository.findByEmail(email)
+				.orElseThrow(()-> new RuntimeException("Invalid Email"));
+	}
+
+
+	@Override
+	public UserDTO findUserById(Long userId) {
+		User user = userRepository.findById(userId)
+				.orElseThrow(()-> new RuntimeException("Invalid User Id"));
+		
+		UserDTO userDTO = mapper.map(user, UserDTO.class);
+		return userDTO;
+	}
+	
+	@Override
+	public Long findUserId(String userName) {
+		User user = userRepository.findByEmail(userName)
+				.orElseThrow(()-> new RuntimeException("Invalid Email"));
+		
+		return user.getId();
 	}
 	
 	

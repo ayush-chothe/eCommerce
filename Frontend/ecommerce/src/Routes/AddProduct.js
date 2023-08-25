@@ -81,7 +81,7 @@ function AddProduct() {
                     </div>
                     <div className="mb-3">
                         <label htmlFor="imageFile" className="form-label">Product Image</label>
-                        <input type="file" className="form-control" id="imageFile" accept="image/*" onChange={handleFileChange} />
+                        <input type="file" required className="form-control" id="imageFile" accept="image/*" onChange={handleFileChange} />
                     </div>
                     <button type="button" onClick={addProduct} className="btn btn-primary">Add Product</button>
                 </form>

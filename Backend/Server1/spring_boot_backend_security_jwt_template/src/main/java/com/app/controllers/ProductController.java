@@ -90,5 +90,10 @@ public class ProductController {
 	  public ResponseEntity<?> describeProduct(@RequestBody ProductDescDTO prodDescDto){
 	    return ResponseEntity.status(HttpStatus.OK).body(prodService.addProductDescription(prodDescDto));
 	  }
+	
+	@GetMapping("/allProducts")
+	  public ResponseEntity<?> getAllProducts(){
+	    return ResponseEntity.status(HttpStatus.OK).body(prodService.getAllProducts());
+	  }
 
 }

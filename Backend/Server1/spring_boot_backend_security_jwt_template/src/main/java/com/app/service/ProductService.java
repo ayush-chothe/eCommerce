@@ -26,4 +26,5 @@ public interface ProductService {
 	List<SubSubCategory> getCategories();
 	List<ProductDTO> getProductsBySellerId(Long sellerId);
 	ApiResponse addProductDescription(ProductDescDTO productDescDTO);
+	List<ProductDTO> getAllProducts();
 }

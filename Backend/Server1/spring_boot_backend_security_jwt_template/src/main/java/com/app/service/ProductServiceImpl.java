@@ -49,7 +49,7 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private ProductImageRepository productImageRepository;
-	
+
 	@Autowired
 	private ProductDescriptionRepository productDescriptionRepository;
 
@@ -77,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
 
 		Product p = productRepository.save(product);
 
-		return new ApiResponse(p.getId().toString());
+		return new ApiResponse(p.getId().toString());	
 	}
 
 	@Override
@@ -124,20 +124,30 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public ApiResponse addProductToCart(CartDto cartDto) {
-
-		User user = userRepository.findById(cartDto.getUserId()).orElseThrow();
-		Product product = productRepository.findById(cartDto.getProductId()).orElseThrow();
-
-		Cart cart = new Cart();
-		cart.setProduct(product);
-		cart.setUser(user);
-		cart.setQuantity(cartDto.getQuantity());
-
-		cartRepository.save(cart);
-
-		return new ApiResponse("Product added to cart");
-	}
+    public ApiResponse addProductToCart(CartDto cartDto) {
+      
+      User user = userRepository.findById(cartDto.getUserId()).orElseThrow();
+      Product product = productRepository.findById(cartDto.getProductId()).orElseThrow();
+      
+      Cart tempCart = cartRepository.findByUserAndProduct(user, product);
+      
+      if(tempCart == null) {
+        Cart cart = new Cart();
+        cart.setProduct(product);
+        cart.setUser(user);
+        cart.setQuantity(cartDto.getQuantity());
+        cartRepository.save(cart);
+        return new ApiResponse("Product added to cart");
+      }
+      
+      if(cartDto.getQuantity() == 1)
+      tempCart.setQuantity(tempCart.getQuantity() + 1);
+      else tempCart.setQuantity(tempCart.getQuantity() - 1);
+      
+      
+      System.out.println(tempCart.getQuantity());
+      return new ApiResponse("Product quantity changed to cart");
+    }
 
 	public ApiResponse reviewProduct(ReviewDTO reviewDto) {
 		User customer = userRepository.findById(reviewDto.getCustomerId()).orElseThrow();
@@ -156,11 +166,9 @@ public class ProductServiceImpl implements ProductService {
 	public List<ReviewDTO> getReviews(Long productId) {
 		Product product = productRepository.findById(productId).orElseThrow();
 		List<Review> reviews = reviewRepository.findAllByProduct(product);
-		return reviews.stream()
-				.map(review -> mapper.map(review, ReviewDTO.class))
-				.collect(Collectors.toList());
+		return reviews.stream().map(review -> mapper.map(review, ReviewDTO.class)).collect(Collectors.toList());
 	}
-	
+
 	@Override
 	public List<SubSubCategory> getCategories() {
 		return subSubCategoryRepository.findAll();
@@ -170,33 +178,52 @@ public class ProductServiceImpl implements ProductService {
 	public List<ProductDTO> getProductsBySellerId(Long sellerId) {
 		User seller = userRepository.findById(sellerId).orElseThrow(() -> new ResourceNotFoundException("Invalid Id"));
 		List<Product> products = productRepository.findAllBySeller(seller);
-		
-		return products.stream()
-				.map(product -> {
-					ProductDTO productDto = mapper.map(product, ProductDTO.class);
-					List<ProductImage> productImages = productImageRepository.findByProduct(product);
-					List<Long> list = new ArrayList<>();
 
-					for (ProductImage pi : productImages) {
-						list.add(pi.getId());
-					}
-					
-					productDto.setProductImageIds(list);
-					productDto.setSellerId(sellerId);
-					productDto.setCategoryId(product.getCategory().getId());
-					
-					return productDto;
-				})
-				.collect(Collectors.toList());
+		return products.stream().map(product -> {
+			ProductDTO productDto = mapper.map(product, ProductDTO.class);
+			List<ProductImage> productImages = productImageRepository.findByProduct(product);
+			List<Long> list = new ArrayList<>();
+
+			for (ProductImage pi : productImages) {
+				list.add(pi.getId());
+			}
+
+			productDto.setProductImageIds(list);
+			productDto.setSellerId(sellerId);
+			productDto.setCategoryId(product.getCategory().getId());
+
+			return productDto;
+		}).collect(Collectors.toList());
 	}
 
 	@Override
 	public ApiResponse addProductDescription(ProductDescDTO productDescDTO) {
-		Product product = productRepository.findById(productDescDTO.getProductId()).orElseThrow(() -> new ResourceNotFoundException("Invalid productId"));
+		Product product = productRepository.findById(productDescDTO.getProductId())
+				.orElseThrow(() -> new ResourceNotFoundException("Invalid productId"));
 		ProductDescription pd = mapper.map(productDescDTO, ProductDescription.class);
 		pd.setProductId(product);
 		productDescriptionRepository.save(pd);
 		return new ApiResponse("Product Description Added Successfully!");
+	}
+
+	@Override
+	public List<ProductDTO> getAllProducts() {
+		List<Product> products = productRepository.findAll();
+		return products.stream().map(product -> {
+			ProductDTO productDto = mapper.map(product, ProductDTO.class);
+			List<ProductImage> productImages = productImageRepository.findByProduct(product);
+			List<Long> list = new ArrayList<>();
+
+			for (ProductImage pi : productImages) {
+				list.add(pi.getId());
+			}
+
+			productDto.setProductImageIds(list);
+			productDto.setSellerId(product.getSeller().getId());
+			productDto.setCategoryId(product.getCategory().getId());
+
+			return productDto;
+		}).collect(Collectors.toList());
 	}
 
 }
