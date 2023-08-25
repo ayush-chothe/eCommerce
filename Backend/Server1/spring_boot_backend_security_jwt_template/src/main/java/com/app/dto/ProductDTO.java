@@ -7,16 +7,19 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Range;
 
+import com.app.pojo.ProductStatus;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class ProductDTO {
 	
-	@NotNull
 	private Long id;
 	
 	@NotBlank(message = "Product name cannot be empty")
@@ -35,4 +38,6 @@ public class ProductDTO {
 	
 	@NotNull(message="CategoryId cannot be blank")
 	private Long categoryId;
+	
+	private ProductStatus status;
 }

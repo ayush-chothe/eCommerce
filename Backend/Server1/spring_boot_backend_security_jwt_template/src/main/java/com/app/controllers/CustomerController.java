@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,10 +22,12 @@ import com.app.dto.LoginDTO;
 import com.app.dto.UserDTO;
 import com.app.pojo.User;
 import com.app.service.OrderService;
+import com.app.service.ProductService;
 import com.app.service.UserService;
 
 @RestController
 @RequestMapping("/user")
+@CrossOrigin(origins = "*")
 public class CustomerController {
 	
 	@Autowired
@@ -32,6 +35,9 @@ public class CustomerController {
 	
 	@Autowired
 	OrderService orderService;
+	
+	@Autowired
+	ProductService productService;
 	
 	@Autowired
 	private ModelMapper mapper;
@@ -76,5 +82,10 @@ public class CustomerController {
 	@GetMapping("/cart/{id}")
 	public ResponseEntity<?> showCart(@RequestParam Long id) {
 		return ResponseEntity.status(HttpStatus.OK).body(userService.getCart(id));
+	}
+	
+	@GetMapping("/getCategories")
+	public ResponseEntity<?> getCategories() {
+		return ResponseEntity.status(HttpStatus.OK).body(productService.getCategories());
 	}
 }

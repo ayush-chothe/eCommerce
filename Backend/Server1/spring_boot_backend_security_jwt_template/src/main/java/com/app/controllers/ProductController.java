@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,11 +25,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.app.dto.ApiResponse;
 import com.app.dto.CartDto;
 import com.app.dto.ProductDTO;
+import com.app.dto.ProductDescDTO;
 import com.app.dto.ReviewDTO;
 import com.app.service.ProductService;
 
 @RestController
 @RequestMapping("/product")
+@CrossOrigin(origins = "*")
 public class ProductController {
 	@Autowired
 	private ProductService prodService;
@@ -39,17 +42,18 @@ public class ProductController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getProduct(@RequestParam Long id) {
+	public ResponseEntity<?> getProduct(@PathVariable Long id) {
 		return ResponseEntity.status(HttpStatus.OK).body(prodService.getProduct(id));
 	}
 
 	@PutMapping("/editProduct")
 	public ResponseEntity<?> editProduct(@RequestBody @Valid ProductDTO productDto) {
+		System.out.println(productDto);
 		return ResponseEntity.status(HttpStatus.OK).body(prodService.addNewProduct(productDto));
 	}
 
 	@GetMapping("/deleteProduct/{id}")
-	public ResponseEntity<?> deleteProduct(@RequestParam Long id) {
+	public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
 		return ResponseEntity.status(HttpStatus.OK).body(prodService.deleteProduct(id));
 	}
 
@@ -60,11 +64,11 @@ public class ProductController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(prodService.addImage(productId, imageFile));
 	}
 
-	@GetMapping(value = "/images/{productId}", produces = { IMAGE_GIF_VALUE, IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE })
-	public ResponseEntity<?> downloadImage(@PathVariable Long productId) throws IOException {
+	@GetMapping(value = "/images/{imageId}", produces = { IMAGE_GIF_VALUE, IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE })
+	public ResponseEntity<?> downloadImage(@PathVariable Long imageId) throws IOException {
 
 		System.out.println("in download img ");
-		return ResponseEntity.ok(prodService.getImages(productId));
+		return ResponseEntity.ok(prodService.getImages(imageId));
 	}
 
 	@PostMapping("/cart")
@@ -76,5 +80,15 @@ public class ProductController {
 	public ResponseEntity<?> reviewProduct(@RequestBody ReviewDTO reviewDto) {
 		return ResponseEntity.status(HttpStatus.OK).body(prodService.reviewProduct(reviewDto));
 	}
+	
+	@GetMapping("/allProducts/{id}")
+	public ResponseEntity<?> getAllProductsBySellerId(@PathVariable Long id) {
+		return ResponseEntity.status(HttpStatus.OK).body(prodService.getProductsBySellerId(id));
+	}
+	
+	@PostMapping("/description")
+	  public ResponseEntity<?> describeProduct(@RequestBody ProductDescDTO prodDescDto){
+	    return ResponseEntity.status(HttpStatus.OK).body(prodService.addProductDescription(prodDescDto));
+	  }
 
 }

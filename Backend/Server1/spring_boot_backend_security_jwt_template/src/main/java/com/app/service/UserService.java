@@ -16,6 +16,6 @@ public interface UserService {
 	List<UserDTO> getAllSellers(Role role, UserStatus status);
 	User findUserById(Long id);
 	ApiResponse updateUser(User user);
-	ApiResponse loginUser(LoginDTO credentials);
+	User loginUser(LoginDTO credentials);
 	List<Cart> getCart(Long userId);
 }

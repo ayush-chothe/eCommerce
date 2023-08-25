@@ -12,18 +12,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.app.customException.ResourceNotFoundException;
 import com.app.dto.ApiResponse;
 import com.app.dto.CartDto;
 import com.app.dto.ProductDTO;
+import com.app.dto.ProductDescDTO;
 import com.app.dto.ReviewDTO;
 import com.app.pojo.Cart;
 import com.app.pojo.Product;
+import com.app.pojo.ProductDescription;
 import com.app.pojo.ProductImage;
 import com.app.pojo.ProductStatus;
 import com.app.pojo.Review;
 import com.app.pojo.SubSubCategory;
 import com.app.pojo.User;
 import com.app.repository.CartRepository;
+import com.app.repository.ProductDescriptionRepository;
 import com.app.repository.ProductImageRepository;
 import com.app.repository.ProductRepository;
 import com.app.repository.ReviewRepository;
@@ -45,6 +49,9 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private ProductImageRepository productImageRepository;
+	
+	@Autowired
+	private ProductDescriptionRepository productDescriptionRepository;
 
 	@Autowired
 	private CartRepository cartRepository;
@@ -68,9 +75,9 @@ public class ProductServiceImpl implements ProductService {
 		product.setCategory(cat);
 		product.setStatus(ProductStatus.ADDED);
 
-		productRepository.save(product);
+		Product p = productRepository.save(product);
 
-		return new ApiResponse("Product addition successful");
+		return new ApiResponse(p.getId().toString());
 	}
 
 	@Override
@@ -78,6 +85,8 @@ public class ProductServiceImpl implements ProductService {
 		Product product = productRepository.findById(id).orElseThrow();
 		List<ProductImage> productImages = productImageRepository.findByProduct(product);
 		ProductDTO productDto = mapper.map(product, ProductDTO.class);
+		productDto.setCategoryId(product.getCategory().getId());
+		productDto.setSellerId(product.getSeller().getId());
 		List<Long> list = new ArrayList<>();
 
 		for (ProductImage pi : productImages) {
@@ -108,9 +117,9 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public byte[] getImages(Long productImageId) throws IOException {
+	public byte[] getImages(Long imageId) throws IOException {
 
-		ProductImage productImage = productImageRepository.findById(productImageId).orElseThrow();
+		ProductImage productImage = productImageRepository.findById(imageId).orElseThrow();
 		return productImage.getImage();
 	}
 
@@ -150,6 +159,44 @@ public class ProductServiceImpl implements ProductService {
 		return reviews.stream()
 				.map(review -> mapper.map(review, ReviewDTO.class))
 				.collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<SubSubCategory> getCategories() {
+		return subSubCategoryRepository.findAll();
+	}
+
+	@Override
+	public List<ProductDTO> getProductsBySellerId(Long sellerId) {
+		User seller = userRepository.findById(sellerId).orElseThrow(() -> new ResourceNotFoundException("Invalid Id"));
+		List<Product> products = productRepository.findAllBySeller(seller);
+		
+		return products.stream()
+				.map(product -> {
+					ProductDTO productDto = mapper.map(product, ProductDTO.class);
+					List<ProductImage> productImages = productImageRepository.findByProduct(product);
+					List<Long> list = new ArrayList<>();
+
+					for (ProductImage pi : productImages) {
+						list.add(pi.getId());
+					}
+					
+					productDto.setProductImageIds(list);
+					productDto.setSellerId(sellerId);
+					productDto.setCategoryId(product.getCategory().getId());
+					
+					return productDto;
+				})
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public ApiResponse addProductDescription(ProductDescDTO productDescDTO) {
+		Product product = productRepository.findById(productDescDTO.getProductId()).orElseThrow(() -> new ResourceNotFoundException("Invalid productId"));
+		ProductDescription pd = mapper.map(productDescDTO, ProductDescription.class);
+		pd.setProductId(product);
+		productDescriptionRepository.save(pd);
+		return new ApiResponse("Product Description Added Successfully!");
 	}
 
 }

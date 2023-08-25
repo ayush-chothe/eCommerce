@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.app.customException.ResourceNotFoundException;
 import com.app.dto.ApiResponse;
 import com.app.dto.LoginDTO;
 import com.app.dto.UserDTO;
@@ -73,9 +74,8 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public ApiResponse loginUser(LoginDTO credentials) {
-		userRepository.findByEmailAndPassword(credentials.getEmail(), credentials.getPassword()).orElseThrow();
-		return new ApiResponse("Logged in Successully!");
+	public User loginUser(LoginDTO credentials) {
+		return userRepository.findByEmailAndPassword(credentials.getEmail(), credentials.getPassword()).orElseThrow(() -> 	new ResourceNotFoundException("Invalid Email or Password"));
 	}
 
 	@Override
