@@ -9,6 +9,9 @@ import Cart from "./Routes/Cart";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Orders from "./Routes/Orders";
+import CustomerRegistration from "./Routes/CustomerRegistration";
+import ProtectedRoute from "./Routes/ProtectedRoute";
+import SellerProtectedRoute from "./Routes/SellerProtectedRoute";
 
 function App() {
   return (
@@ -17,15 +20,16 @@ function App() {
     <Routes>
          <Route Exact path="/" element={<Home/>}/>
          <Route Exact path="/login" element={<Login/>}/>
-         <Route exact path="/seller/products" element={<Products/>}/>
+         <Route exact path="/seller/products" element={<SellerProtectedRoute path="/seller/products" component={<Products/>}/>}/>
          <Route exact path="/sellerRegistration" element={<SellerRegistration/>}/>
-         <Route exact path="/seller/addProduct" element={<AddProduct/>}/>
-         <Route exact path="/product/edit/:productId" element={<EditProduct/>}/>
-         <Route exact path="/cart" element={<Cart/>}/>
-         <Route exact path="/orders" element={<Orders/>}/>
+         <Route exact path="/registration" element={<CustomerRegistration/>}/>
+         <Route exact path="/seller/addProduct" element={<SellerProtectedRoute path="/seller/addProduct" component={<AddProduct/>}/>}/>
+         <Route exact path="/product/edit/:productId" element={<SellerProtectedRoute path="/product/edit/:productId" component={<EditProduct/>}/>}/>
+         <Route exact path="/cart" element={<ProtectedRoute path="/cart" component={<Cart/>}/>}/>
+         <Route exact path="/orders" element={<ProtectedRoute path="/orders" component={<Orders/>}/>}/>
     </Routes>
     </BrowserRouter>
-    <ToastContainer/>
+    <ToastContainer autoClose={1000}/>
    </>
   );
 }

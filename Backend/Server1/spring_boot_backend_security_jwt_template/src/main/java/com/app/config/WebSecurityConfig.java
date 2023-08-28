@@ -44,6 +44,7 @@ public class WebSecurityConfig {
 		authorizeRequests()
 		.antMatchers("/product/**").permitAll()
 		.antMatchers("/product/description/**").permitAll()
+		.antMatchers("/user/register").permitAll()
 		.antMatchers("/user/cart/**").permitAll()
 		.antMatchers("/user/orders/**").permitAll()
 		.antMatchers("/user/orderDetails/**").permitAll()

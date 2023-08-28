@@ -9,7 +9,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.dto.AuthRequest;
 import com.app.dto.AuthResp;
+import com.app.dto.UserDTO;
 import com.app.jwt_utils.JwtUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -57,10 +57,11 @@ public class SignInSignUpController {
 			String role = utils.getUserRoleFromJwtToken(jwtToken);
 			
 			Long id = userService.findUserId(userName);
+			UserDTO user = userService.findUserById(id);
 			
 			System.out.println("CHECK CHECK USERID -> " + userId + " Another check of id -> " + id);
 			
-			return ResponseEntity.ok(new AuthResp("Auth successful!", jwtToken, role, id));
+			return ResponseEntity.ok(new AuthResp("Auth successful!", jwtToken, role, id, user.getStatus()));
 		} catch (BadCredentialsException e) { // lab work : replace this by a method in global exc handler
 			// send back err resp code
 			System.out.println("err "+e);

@@ -2,33 +2,51 @@ import "./Login.css";
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 import axios from "axios"
+import {toast} from "react-toastify"
 
 function Login() {
 
     let [icreds, setICreds] = useState({email : "", password : ""});
-    let [user, setUser] = useState({});
     const navigate = useNavigate();
 
     const signIn = () => {
         console.log("in signin")
         axios.post("http://127.0.0.1:7070/auth/signin", icreds)
              .then(res => {
-               setUser(res.data);
-               console.log("Logged in successfully");
-               sessionStorage.setItem("userId", res.data.userId);
-               sessionStorage.setItem("jwt", res.data.jwt);
-               if(res.data.role === "SELLER")
-                navigate("/seller/products")
-               else if(res.data.role === "CUSTOMER")
-                navigate("/home")
-                else navigate("/admin")
+                  console.log(res.data)
+                  sessionStorage.setItem("userId", res.data.userId);
+                  sessionStorage.setItem("jwt", res.data.jwt);
+                  sessionStorage.setItem("isValidUser", "true");
+                  sessionStorage.setItem("role", res.data.role);
+                  sessionStorage.setItem("status", res.data.status);
+                  if(res.data.role === "SELLER")
+                  {
+                    if(res.data.status === "PENDING") {
+                      toast.error("Wait for Admin Approval");
+                      sessionStorage.clear();
+                      setICreds({email : "", password : ""});
+                    }
+                    else {
+                      navigate("/seller/products")
+                      toast.success("Logged In Successfully")
+                    }
+                  }
+                  else if(res.data.role === "CUSTOMER") {
+                    navigate("/")
+                    toast.success("Logged In Successfully")
+                  }
+                  else navigate("/admin")
+               
              }).catch(error => {
                 if (error.response && error.response.status === 404) {
-                  console.log("Invalid credentials")
+                  toast.error("Invalid credentials")
+                  setICreds({email : "", password : ""})
+                  sessionStorage.setItem("isValidUser", "false");
                 } else {
-                  setUser('An error occurred');
+                  toast.error("Invalid credentials");
+                  setICreds({email : "", password : ""})
+                  sessionStorage.setItem("isValidUser", "false");
                 }
-                setUser(null);
               });  
     }
 
@@ -70,7 +88,7 @@ function Login() {
               Submit
             </button>
             <p className="signup">
-              Create an account? <a href="#">Sign Up</a>
+              Create an account? <a href="/registration" >Sign Up</a>
             </p>
           </form>
           <button className="btn btn-primary seller">
