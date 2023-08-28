@@ -1,11 +1,12 @@
 import { React, useEffect, useState } from 'react';
 import axios from 'axios';
-
+import {toast} from 'react-toastify'
 
 
 const ProductCard = ({ product }) => {
 
     const [imageData, setImageData] = useState(null);
+    const [productDescription, setProductDescription] = useState({})
 
     const addToCart = () => {
         let cart = {userId: sessionStorage.getItem("userId"),
@@ -14,12 +15,19 @@ const ProductCard = ({ product }) => {
         console.log(cart);
         axios.post("http://localhost:7070/product/cart", cart)
             .then(res => {
-                console.log(res.data);
+                toast.success("Product added to cart")
             })
     }
 
+    const getProductDescription = (productId) => {
+      axios.get("http://localhost:7070/product/description/" + productId)
+        .then(res => {
+          setProductDescription(res.data);
+        })
+        .catch(err => console.log(err))
+    }
+
     const getImage = (images) => {
-        console.log(images)
         axios.get("http://localhost:7070/product/images/"+images[0], { responseType: 'arraybuffer' })
         .then(response => {
             const base64Image = btoa(
@@ -34,12 +42,13 @@ const ProductCard = ({ product }) => {
 
   useEffect(() => {
     getImage(product.productImageIds);
+    getProductDescription(product.id)
   }, [])
 
   return (
     <div className="card">
-      {imageData == null && <div class="spinner-border" role="status">
-        <span class="visually-hidden">Loading...</span>
+      {imageData == null && <div class="spinner-border" role="status" >
+        <span class="visually-hidden"></span>
     </div>}
       {imageData && <img src={imageData} alt={product.name} className="card-img-top"  style={{
                     maxHeight: "250px",
@@ -49,7 +58,7 @@ const ProductCard = ({ product }) => {
                   }}/>}
       <div className="card-body">
         <h5 className="card-title">{product.name}</h5>
-        <p className="card-text">{product.description}</p>
+        <p className="card-text">{productDescription.desc}</p>
         <p className="card-price">₹{product.price}</p>
         <button onClick={addToCart} className="btn btn-primary">Add to Cart</button>
       </div>

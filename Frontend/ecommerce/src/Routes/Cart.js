@@ -2,22 +2,27 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate} from "react-router-dom"
+import Navbar from '../Components/Navbar';
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
 
   const navigate = useNavigate()
 
-  useEffect(() => {
+  const getCartItems = () => {
     axios.get("http://127.0.0.1:7070/user/cart/" + sessionStorage.getItem("userId"))
         .then(res => setCartItems(res.data))
         .catch(err => console.log(err))
-  }, [])
+  }
+
+  const deleteItem = (id) => {
+    axios.delete("http://127.0.0.1:7070/product/cart/"+id)
+        .then(res => getCartItems())
+        .catch(err => console.log(err))
+  }
 
   useEffect(() => {
-    axios.get("http://127.0.0.1:7070/user/cart/" + sessionStorage.getItem("userId"))
-        .then(res => setCartItems(res.data))
-        .catch(err => console.log(err))
-  }, [cartItems])
+    getCartItems();
+  }, [])
 
   const handleQuantityChange = (itemId, newQuantity) => {
     let cart = {userId: sessionStorage.getItem("userId"),
@@ -25,7 +30,7 @@ const CartPage = () => {
                 quantity: newQuantity}
     axios.post("http://127.0.0.1:7070/product/cart/", cart)
         .then(res => {
-
+            getCartItems();
         })
     
   };
@@ -41,6 +46,8 @@ const CartPage = () => {
   };
 
   return (
+   <>
+    <Navbar/>
     <div className="container mt-5">
       <h1>Shopping Cart</h1>
       <table className="table">
@@ -57,7 +64,7 @@ const CartPage = () => {
           {cartItems.map(item => (
             <tr key={item.id}>
               <td>{item.product.name}</td>
-              <td>${item.product.price}</td>
+              <td>₹{item.product.price}</td>
               <td>
                 <button
                   className="btn btn-sm btn-secondary"
@@ -78,19 +85,22 @@ const CartPage = () => {
                   +
                 </button>
               </td>
-              <td>${item.product.price * item.quantity}</td>
+              <td>₹{item.product.price * item.quantity}</td>
               <td>
-                <button className="btn btn-sm btn-danger">Remove</button>
+                <button className="btn btn-sm btn-danger" onClick={() => deleteItem(item.id)}>Remove</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <div className="text-right">
-        <h5>Total Price: ${calculateTotal()}</h5>
+     {cartItems.length > 0 &&  <div className="text-right">
+        <h5>Total Price: ₹{calculateTotal()}</h5>
         <button className="btn btn-primary" onClick={checkout}>Checkout</button>
       </div>
+    }
+    {cartItems.length === 0 && <h2>Empty Cart</h2>}
     </div>
+   </>
   );
 };
 

@@ -201,7 +201,7 @@ public class ProductServiceImpl implements ProductService {
 		Product product = productRepository.findById(productDescDTO.getProductId())
 				.orElseThrow(() -> new ResourceNotFoundException("Invalid productId"));
 		ProductDescription pd = mapper.map(productDescDTO, ProductDescription.class);
-		pd.setProductId(product);
+		pd.setProduct(product);
 		productDescriptionRepository.save(pd);
 		return new ApiResponse("Product Description Added Successfully!");
 	}
@@ -224,6 +224,18 @@ public class ProductServiceImpl implements ProductService {
 
 			return productDto;
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public ApiResponse removeProductFromCart(Long cartId) {
+		cartRepository.deleteById(cartId);
+		return new ApiResponse("Product removed from cart successfully");
+	}
+
+	@Override
+	public ProductDescription getProductDescription(Long productId) {
+		Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Invalid productId"));
+		return productDescriptionRepository.findByProduct(product);
 	}
 
 }

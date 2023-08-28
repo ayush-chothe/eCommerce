@@ -86,4 +86,15 @@ public class CustomerController {
 	public ResponseEntity<?> getCategories() {
 		return ResponseEntity.status(HttpStatus.OK).body(productService.getCategories());
 	}
+	
+	@GetMapping("/orders/{userId}")
+	public ResponseEntity<?> getAllOrders(@PathVariable Long userId) {
+		return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrders(userId));
+	}
+	
+	@GetMapping("/orderDetails/{orderId}")
+	public ResponseEntity<?> getOrderDetails(@PathVariable Long orderId) {
+		System.out.println("in orderDetails");
+		return ResponseEntity.status(HttpStatus.OK).body(orderService.getAllOrderDetails(orderId));
+	}
 }

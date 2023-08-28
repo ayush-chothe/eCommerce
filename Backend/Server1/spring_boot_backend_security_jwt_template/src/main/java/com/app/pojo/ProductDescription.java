@@ -23,6 +23,6 @@ public class ProductDescription extends BaseEntity {
   @OneToOne
   @JoinColumn(name="product_id")
   @MapsId
-  private Product productId; 
+  private Product product; 
   
 }

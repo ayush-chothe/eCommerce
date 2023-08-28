@@ -10,6 +10,7 @@ import com.app.dto.CartDto;
 import com.app.dto.ProductDTO;
 import com.app.dto.ProductDescDTO;
 import com.app.dto.ReviewDTO;
+import com.app.pojo.ProductDescription;
 import com.app.pojo.Review;
 import com.app.pojo.SubSubCategory;
 
@@ -27,4 +28,6 @@ public interface ProductService {
 	List<ProductDTO> getProductsBySellerId(Long sellerId);
 	ApiResponse addProductDescription(ProductDescDTO productDescDTO);
 	List<ProductDTO> getAllProducts();
+	ApiResponse removeProductFromCart(Long cartId);
+	ProductDescription getProductDescription(Long productId);
 }

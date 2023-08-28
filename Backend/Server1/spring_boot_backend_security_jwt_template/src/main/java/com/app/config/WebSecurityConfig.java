@@ -43,7 +43,11 @@ public class WebSecurityConfig {
 		and().
 		authorizeRequests()
 		.antMatchers("/product/**").permitAll()
+		.antMatchers("/product/description/**").permitAll()
 		.antMatchers("/user/cart/**").permitAll()
+		.antMatchers("/user/orders/**").permitAll()
+		.antMatchers("/user/orderDetails/**").permitAll()
+		.antMatchers("/product/cart/**").permitAll()
 		.antMatchers("/user/checkout/**").permitAll()
 		.antMatchers("/admin/**").permitAll()
 		.antMatchers("/user/**").permitAll()
