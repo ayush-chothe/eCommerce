@@ -16,4 +16,5 @@ public class AuthResp {
 	private String jwt;
 	private String role;
 	private Long userId;
+	private String status;
 }

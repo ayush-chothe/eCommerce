@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 
+import com.app.pojo.UserStatus;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,4 +24,8 @@ public class UserDTO {
 	private String email;
 	
 	private String mobile;
+	
+	private String status;
+	
+	private String role;
 }

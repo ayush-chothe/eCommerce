@@ -3,15 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {toast} from "react-toastify"
 
-const SellerRegistration = () => {
+const CustomerRegistration = () => {
   const [user, setUser] = useState({
     firstName: '',
     lastName: '',
     email: '',
     password: '',
-    role: 'SELLER',
+    role: 'CUSTOMER',
     mobile: '',
-    status: 'PENDING',
+    status: 'APPROVED',
   });
 
   const navigate = useNavigate();
@@ -34,9 +34,9 @@ const SellerRegistration = () => {
           lastName: '',
           email: '',
           password: '',
-          role: 'SELLER',
+          role: 'CUSTOMER',
           mobile: '',
-          status: 'PENDING',
+          status: 'APPROVED',
         });
         navigate('/login');
       })
@@ -47,7 +47,7 @@ const SellerRegistration = () => {
     <div className='container mt-5'>
       <div className='card shadow'>
         <div className='card-body'>
-          <h3 className='card-title mb-4'>Seller Registration</h3>
+          <h3 className='card-title mb-4'>Customer Registration</h3>
           <form>
             <div className='mb-3'>
               <input
@@ -115,4 +115,4 @@ const SellerRegistration = () => {
   );
 };
 
-export default SellerRegistration;
+export default CustomerRegistration;
