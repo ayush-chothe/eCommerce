@@ -3,6 +3,6 @@
     "PORT": 4000,
     "host"     : "localhost",
     "user"     : "root",
-    "password" : "manager",
-    "database" : "eCommerce"
+    "password" : "#Deadshot",
+    "database" : "ecommerce"
 }
