@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.app.customException.ResourceNotFoundException;
 import com.app.dto.ApiResponse;
 import com.app.pojo.Cart;
 import com.app.pojo.Order;
@@ -80,6 +81,18 @@ public class OrderServiceImpl implements OrderService {
 		
 		return new ApiResponse("Order placed successfully");
 	}
-	
-	
+
+
+	@Override
+	public List<Order> getOrders(Long userId) {
+		User customer = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("Invalid userId"));
+		return orderRepository.findAllByCustomer(customer);
+	}
+
+
+	@Override
+	public List<OrderDetail> getAllOrderDetails(Long orderId) {
+		Order order = orderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Invalid orderId"));
+		return orderDetailRepository.findAllByOrder(order);
+	}
 }

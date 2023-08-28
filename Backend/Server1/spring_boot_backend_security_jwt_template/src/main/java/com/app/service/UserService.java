@@ -14,8 +14,10 @@ public interface UserService {
 	ApiResponse addNewUser(User user);
 	List<UserDTO> getAllUsers();
 	List<UserDTO> getAllSellers(Role role, UserStatus status);
-	User findUserById(Long id);
+	UserDTO findUserById(Long id);
 	ApiResponse updateUser(User user);
-	ApiResponse loginUser(LoginDTO credentials);
+	User loginUser(LoginDTO credentials);
 	List<Cart> getCart(Long userId);
+	User authenitcateUser(String email);
+	Long findUserId(String userName);
 }

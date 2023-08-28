@@ -8,7 +8,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,10 +23,12 @@ import com.app.dto.LoginDTO;
 import com.app.dto.UserDTO;
 import com.app.pojo.User;
 import com.app.service.OrderService;
+import com.app.service.ProductService;
 import com.app.service.UserService;
 
 @RestController
 @RequestMapping("/user")
+@CrossOrigin(origins = "*")
 public class CustomerController {
 	
 	@Autowired
@@ -34,7 +38,8 @@ public class CustomerController {
 	OrderService orderService;
 	
 	@Autowired
-	private ModelMapper mapper;
+	ProductService productService;
+	
 	
 	@PostMapping("/register")
 	public ResponseEntity<?> addNewCustomer(@RequestBody User user) {
@@ -49,12 +54,11 @@ public class CustomerController {
 	
 	@GetMapping("/{id}")
 	public UserDTO findUserById(@RequestParam Long id) {
-		User user = userService.findUserById(id);
-		return mapper.map(user, UserDTO.class);
+		return userService.findUserById(id);
 	}
 	
 	@GetMapping("/userToUpdate/{id}")
-	public User findUserToUpdate(@RequestParam Long id) {
+	public UserDTO findUserToUpdate(@RequestParam Long id) {
 		return userService.findUserById(id);
 	}
 	
@@ -69,12 +73,28 @@ public class CustomerController {
 	}
 	
 	@GetMapping("/checkout/{id}")
-	public ResponseEntity<?> checkout(@RequestParam Long id) {
+	public ResponseEntity<?> checkout(@PathVariable Long id) {
 		return ResponseEntity.status(HttpStatus.OK).body(orderService.confirmPayment(id));
 	}
 	
 	@GetMapping("/cart/{id}")
-	public ResponseEntity<?> showCart(@RequestParam Long id) {
+	public ResponseEntity<?> showCart(@PathVariable Long id) {
 		return ResponseEntity.status(HttpStatus.OK).body(userService.getCart(id));
+	}
+	
+	@GetMapping("/getCategories")
+	public ResponseEntity<?> getCategories() {
+		return ResponseEntity.status(HttpStatus.OK).body(productService.getCategories());
+	}
+	
+	@GetMapping("/orders/{userId}")
+	public ResponseEntity<?> getAllOrders(@PathVariable Long userId) {
+		return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrders(userId));
+	}
+	
+	@GetMapping("/orderDetails/{orderId}")
+	public ResponseEntity<?> getOrderDetails(@PathVariable Long orderId) {
+		System.out.println("in orderDetails");
+		return ResponseEntity.status(HttpStatus.OK).body(orderService.getAllOrderDetails(orderId));
 	}
 }

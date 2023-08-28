@@ -15,4 +15,5 @@ import com.app.pojo.UserStatus;
 public interface UserRepository extends JpaRepository<User, Long>{
 	List<User> findByRoleAndStatus(Role role, UserStatus status);
 	Optional<User> findByEmailAndPassword(String email, String password);
+	Optional<User> findByEmail(String email);
 }
