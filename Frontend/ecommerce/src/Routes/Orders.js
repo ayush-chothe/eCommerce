@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Button, ListGroup, Modal, Container, Row, Col } from 'react-bootstrap';
+import Navbar from '../Components/Navbar';
 
 //
 const Orders = () => {
@@ -43,7 +44,9 @@ const Orders = () => {
   }, [])
 
   return (
-    <div>
+   <>
+   <Navbar/>
+   <div>
       <div className="container mt-5 col-sm-6">
       <h2>Order List</h2>
       <ListGroup>
@@ -100,6 +103,7 @@ const Orders = () => {
         </Modal.Footer>
       </Modal>
     </div>
+   </>
   );
 };
 

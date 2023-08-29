@@ -9,10 +9,19 @@ const ProductCard = ({ product }) => {
     const [productDescription, setProductDescription] = useState({})
 
     const addToCart = () => {
+        if(sessionStorage.getItem("userId") == null) {
+          toast.error("Login first");
+          return;
+        }
+        if(product.sellerId == sessionStorage.getItem("userId")) {
+          toast.error("You cannot add your own product to your cart")
+          return;
+        }
+        console.log(product)
         let cart = {userId: sessionStorage.getItem("userId"),
                     productId: product.id,
                     quantity: 1}
-        console.log(cart);
+
         axios.post("http://localhost:7070/product/cart", cart)
             .then(res => {
                 toast.success("Product added to cart")

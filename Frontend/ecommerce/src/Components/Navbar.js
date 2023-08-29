@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Search from './Search';
 
-function Navbar( {setData, data}) {
+
+function Navbar( props) {
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    sessionStorage.clear();
+    navigate("/login")
+  }
 
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -38,10 +45,18 @@ function Navbar( {setData, data}) {
                 Orders
               </button>
             </li>
+            {
+              sessionStorage.getItem("role") === "SELLER" ?             <li className="nav-item">
+              <button className="nav-link btn" onClick={() => navigate('/seller/products')}>
+                Products
+              </button>
+            </li> : ""
+            }
           </ul>
-          <form className="d-flex" role="search">
-            <input className="form-control me-2" onChange={(e) => setData(e.target.value)} value={data} type="search" placeholder="Search" aria-label="Search" />
-          </form>
+          <Search setData={props.setData} data={props.data}/>
+          <button className="btn btn-outline-danger" onClick={handleLogout}>
+            Logout
+          </button>
         </div>
       </div>
     </nav>
