@@ -3,6 +3,7 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate} from "react-router-dom"
 import Navbar from '../Components/Navbar';
+import {toast} from 'react-toastify'
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
 
@@ -37,7 +38,10 @@ const CartPage = () => {
 
   const checkout = () => {
     axios.get("http://127.0.0.1:7070/user/checkout/" + sessionStorage.getItem("userId"))
-        .then(res => navigate("/"))
+        .then(res => {
+          navigate("/");
+          toast.success("Thank You for your purchase")
+        })
         .catch(err => console.log(err))
   }
 

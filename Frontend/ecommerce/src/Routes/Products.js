@@ -5,19 +5,23 @@ import axios from 'axios';
 function Products() {
     const [products, setProducts] = useState([]);
 
-    useEffect(() => {
+    const getData = () => {
         axios.get(`http://127.0.0.1:7070/product/allProducts/${sessionStorage.getItem("userId")}`)
-             .then(res => {
-                setProducts(res.data);
-             })
-             .catch(err => console.log(err));
+        .then(res => {
+           setProducts(res.data);
+        })
+        .catch(err => console.log(err));
+    }
+
+    useEffect(() => {
+       getData();
     }, []);
 
     const navigate = useNavigate();
 
     const deleteProduct = (productId) => {
         axios.get(`http://127.0.0.1:7070/product/deleteProduct/${productId}`)
-            .then(res => console.log(res.data))
+            .then(res => getData())
             .catch(err => console.log(err));
     }
 
@@ -25,6 +29,9 @@ function Products() {
         <div className='container mt-5'>
             <div className="card p-4 shadow-sm">
                 <div className="d-flex justify-content-between align-items-center mb-3">
+                <Link to='/' className='btn btn-secondary'>
+                        Home
+                    </Link>
                     <h2 className="mb-0">List of Products</h2>
                     <Link to='/seller/addProduct' className='btn btn-primary'>
                         Add Product

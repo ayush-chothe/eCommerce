@@ -8,7 +8,7 @@ function ProtectedRoute( props ) {
     if(isValidUser === "true") isLoggedIn = true;
     else isLoggedIn = false;
     if (isLoggedIn) {
-        return <Route exact path={props.path} element={props.component}/>
+        return props.component;
     }
     else return <Login/>
 }

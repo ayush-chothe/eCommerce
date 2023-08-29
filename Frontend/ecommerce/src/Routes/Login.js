@@ -35,7 +35,7 @@ function Login() {
                     navigate("/")
                     toast.success("Logged In Successfully")
                   }
-                  else navigate("/admin")
+                  else navigate("/adminhome")
                
              }).catch(error => {
                 if (error.response && error.response.status === 404) {
